@@ -13,7 +13,32 @@ library(tibble)
 library(dplyr)
 library(glue)
 library(plotly)
+library(sass)
+library(shiny.router)
+
 #library(icd)
+header <- "header"
+navigation <- "navigation"
+footer <- "footer"
+
+layout <- function(mainUI){
+  div(class = "grid-container",
+      div(class = "header",header),
+      div(class = "sidenav",navigation),
+      div(class = "main",mainUI),
+      div(class = "footer",footer)
+  )
+}
+
+makePage <- function(title, subtitle, contents){
+  tagList(div(
+    class = "page-title",
+    span(title, class = "ms-fontSize-32 ms-fontWeight-semibold", style = "color: #323130"),
+    span(subtitle, class = "ms-fontSize-14 ms-fontWeight-regular", style = "color: #605E5C; margin: 14px;")
+  ),
+  contents
+  )
+}
 
 causes_options <- list(
   list(key = "Car", text = "Car"),
@@ -196,6 +221,8 @@ ActionBtn <- Stack(
   )
 )
 
+
+
 makeCard <- function(title, content, size = 12, style = ""){
   div(
     class = glue("card ms-depth-8 ms-sm{size} ms-xl{size}"),
@@ -212,16 +239,28 @@ makeCard <- function(title, content, size = 12, style = ""){
   )
 }
 
+data_entry_page <- makePage(
+  "Data Entry for Morbidity and Mortality Statistics",
+  "facility entry form",
+  div(
+    Stack(
+      tokens = list(childrenGap = 10), horizontal = TRUE,
+      makeCard("Particulars of the deceased",basicInfo, size = 4),
+      makeCard("Medical details", medicalInfo, size = 8 ),
+    ),
+    makeCard("",ActionBtn,size = 12),
+    reactOutput("modal")
+  )
+)
+
 # Define UI for application that draws a histogram
 ui <- fluentPage(
-  tags$style(".card { padding: 28px; margin-bottom: 28px; }"),
-  Stack(
-    tokens = list(childrenGap = 10), horizontal = TRUE,
-    makeCard("Particulars of the deceased",basicInfo, size = 4),
-    makeCard("Medical details",medicalInfo, size = 8 ),
-  ),
-  makeCard("",ActionBtn,size = 12),
-  reactOutput("modal")
+  layout(data_entry_page),
+  tags$head(
+    tags$link(href = "style.css",
+              rel = "stylesheet",
+              type = "text/css")
+  )
 )
 
 # Define server logic required to draw a histogram
