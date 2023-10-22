@@ -5,7 +5,7 @@ account: ruzml
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10265303
-bundleId: 7832232
+bundleId: 7832391
 url: https://ruzml.shinyapps.io/ShinyD/
 version: 1
 asMultiple: FALSE

@@ -17,9 +17,7 @@ library(sass)
 library(shiny.router)
 
 #library(icd)
-header <- "header"
-navigation <- "navigation"
-footer <- "footer"
+source("pagelayout.R")
 
 layout <- function(mainUI){
   div(class = "grid-container",
@@ -223,6 +221,8 @@ ActionBtn <- Stack(
 
 
 
+
+
 makeCard <- function(title, content, size = 12, style = ""){
   div(
     class = glue("card ms-depth-8 ms-sm{size} ms-xl{size}"),
@@ -253,14 +253,48 @@ data_entry_page <- makePage(
   )
 )
 
+
+card1 <- makeCard(
+  "Welcome",
+  div(
+    Text("Some nice TEXT HERE "),
+    Text("and THERE"),
+    Text("and THERE")
+  )
+)
+
+card2 <- makeCard(
+  "Analysis",
+  div(
+    Text("Some analysis of the very data will be done")
+  )
+)
+
+home_page <- makePage(
+  "Morbidity and Mortality Statistics",
+  "DFT analytics team at work",
+  div(card1, card2)
+)
+####################defining routes #############
+
+router <- router_ui(
+  route("/", home_page),
+  route("other",layout(data_entry_page))
+)
+
+###############################################
+
+
 # Define UI for application that draws a histogram
 ui <- fluentPage(
-  layout(data_entry_page),
+  # layout(data_entry_page),
   tags$head(
     tags$link(href = "style.css",
               rel = "stylesheet",
-              type = "text/css")
-  )
+              type = "text/css"),
+  
+  ),
+  router
 )
 
 # Define server logic required to draw a histogram
@@ -414,6 +448,7 @@ server <- function(input, output, session) {
   # output$socialValue <- renderText({
   #   sprintf("social is: %s",input$social)
   # })
+  router_server()
 }
 
 # Run the application 
